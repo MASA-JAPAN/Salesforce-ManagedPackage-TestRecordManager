@@ -5,6 +5,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class RecordDefinitionCreationModal extends LightningModal {
 
+    @track id = "";
     @track definitionName = "";
     @track objectName = "";
     @track inputList = [];
@@ -19,11 +20,9 @@ export default class RecordDefinitionCreationModal extends LightningModal {
                 return;
             }
 
+            this.id = this.content.id;
             this.definitionName = this.content.Name;
             this.objectName = this.content.Object__c;
-
-            console.log(this.content.Record_Values__c);
-
             this.inputList = JSON.parse(this.content.Record_Values__c);
 
         } catch (error) {
@@ -34,13 +33,13 @@ export default class RecordDefinitionCreationModal extends LightningModal {
 
     handleSave() {
         const recordDefinitionDto = {
-            id: null,
+            id: this.id,
             name: this.definitionName,
             obj: this.objectName,
             fieldToValueWithKeys: this.inputList
         };
 
-        const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);;
+        const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
 
         createDefinition({ recordDefinitionDtoString })
             .then(() => {
