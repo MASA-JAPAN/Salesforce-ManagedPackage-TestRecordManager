@@ -17,6 +17,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>RecordCreationLog__c.Object__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>RecordCreationLog__c.Success__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -45,4 +50,8 @@
         <object>RecordDefinition__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <tabSettings>
+        <tab>Record_Management</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>
