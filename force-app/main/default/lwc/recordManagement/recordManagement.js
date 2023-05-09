@@ -1,6 +1,7 @@
 import { LightningElement, wire, track } from "lwc";
 import { refreshApex } from '@salesforce/apex';
 import RecordDefinitionCreationModal from 'c/recordDefinitionCreationModal';
+import RecordCreationModal from 'c/recordCreationModal';
 import getRecordDefinitions from '@salesforce/apex/RecordDefinitionService.getRecordDefinitions';
 
 export default class RecordManagement extends LightningElement {
@@ -61,6 +62,14 @@ export default class RecordManagement extends LightningElement {
 
                 break;
             case 'Create':
+
+                RecordCreationModal.open({
+                    size: 'small',
+                    content: row,
+                    label: 'Record Creation'
+                });
+
+
                 break;
             default:
                 break;

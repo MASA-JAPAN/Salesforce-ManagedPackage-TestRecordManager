@@ -1,7 +1,9 @@
 public with sharing class RecordOperationService {
 
     @AuraEnabled
-    public static void createRecords(Integer numberOfCreation, RecordDefinitionDto recordDefinitionDto){
+    public static void createRecords(Integer numberOfCreation, Object recordDefinitionDtoString){
+
+        RecordDefinitionDto recordDefinitionDto = (RecordDefinitionDto) JSON.deserialize(String.valueOf(recordDefinitionDtoString), RecordDefinitionDto.class);
 
         if (numberOfCreation > 5000) {
             throw new RecordOperationServiceException('Max size is 5000');
@@ -19,7 +21,7 @@ public with sharing class RecordOperationService {
             for (RecordDefinitionDto.FieldToValueWithKey fieldToValueWithKey : recordDefinitionDto.fieldToValueWithKeys) {
                 String value = fieldToValueWithKey.fieldToValue.value;
                 if (value.contains('{0}')) {
-                    value.replace('{0}', String.valueOf(i));
+                    value = value.replace('{0}', String.valueOf(i));
                 }
                 record.put(fieldToValueWithKey.fieldToValue.field, value);
             }
