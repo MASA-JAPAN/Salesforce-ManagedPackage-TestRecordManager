@@ -1,12 +1,16 @@
 public with sharing class RecordDefinitionService {
 
     @AuraEnabled
-    public static void createDefinition(Object recordDefinitionDtoString){
+    public static void upsertDefinition(Object recordDefinitionDtoString){
 
         RecordDefinitionDto recordDefinitionDto = (RecordDefinitionDto) JSON.deserialize(String.valueOf(recordDefinitionDtoString), RecordDefinitionDto.class);
 
         RecordDefinition__c recordDefinition = new RecordDefinition__c();
-        recordDefinition.Name = recordDefinitionDto.id;
+
+        if (String.isNotEmpty(recordDefinitionDto.id)) {
+            recordDefinition.Id = recordDefinitionDto.id;
+        }
+
         recordDefinition.Name = recordDefinitionDto.name;
         recordDefinition.Object__c = recordDefinitionDto.obj;
         recordDefinition.Record_Values__c = JSON.serialize(recordDefinitionDto.fieldToValueWithKeys);

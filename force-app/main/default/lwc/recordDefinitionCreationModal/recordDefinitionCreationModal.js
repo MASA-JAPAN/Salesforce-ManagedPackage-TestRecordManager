@@ -1,6 +1,6 @@
 import { api, track } from 'lwc';
 import LightningModal from 'lightning/modal';
-import createDefinition from '@salesforce/apex/RecordDefinitionService.createDefinition';
+import upsertDefinition from '@salesforce/apex/RecordDefinitionService.upsertDefinition';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class RecordDefinitionCreationModal extends LightningModal {
@@ -20,7 +20,7 @@ export default class RecordDefinitionCreationModal extends LightningModal {
                 return;
             }
 
-            this.id = this.content.id;
+            this.id = this.content.Id;
             this.definitionName = this.content.Name;
             this.objectName = this.content.Object__c;
             this.inputList = JSON.parse(this.content.Record_Values__c);
@@ -41,7 +41,7 @@ export default class RecordDefinitionCreationModal extends LightningModal {
 
         const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
 
-        createDefinition({ recordDefinitionDtoString })
+        upsertDefinition({ recordDefinitionDtoString })
             .then(() => {
                 this.close();
                 this.showToast('Success', 'Record saved successfully', 'success');
