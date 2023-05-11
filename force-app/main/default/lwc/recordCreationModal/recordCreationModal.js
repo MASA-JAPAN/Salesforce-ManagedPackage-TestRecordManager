@@ -9,16 +9,15 @@ export default class RecordCreationModal extends LightningModal {
 
     @track numberOfCreation;
 
+    handleCancel() {
+
+        this.close();
+
+    }
+
     handleCreate() {
 
-        console.log("ssss");
-
         try {
-
-            console.log(JSON.stringify(this.content.Id));
-            console.log(JSON.stringify(this.content.Name));
-            console.log(JSON.stringify(this.content.objectName));
-            console.log(JSON.stringify(this.content.inputList));
 
             const recordDefinitionDto = {
                 id: this.content.Id,
