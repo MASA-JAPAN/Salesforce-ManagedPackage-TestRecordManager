@@ -27,8 +27,6 @@ export default class RecordCreationModal extends LightningModal {
             };
     
             const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
-    
-            console.log("recordDefinitionDtoString" + recordDefinitionDtoString);
 
             const numberOfCreation = this.numberOfCreation;
     

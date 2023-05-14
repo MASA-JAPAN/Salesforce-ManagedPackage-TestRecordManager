@@ -18,7 +18,7 @@ public with sharing class RecordDefinitionService {
         Database.upsert(recordDefinition);
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<RecordDefinition__c> getRecordDefinitions() {
         return [SELECT Id, Name, Object__c, CreatedDate, Record_Values__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
     }

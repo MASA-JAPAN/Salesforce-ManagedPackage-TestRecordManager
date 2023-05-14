@@ -2,6 +2,7 @@ import { api, track } from 'lwc';
 import LightningModal from 'lightning/modal';
 import upsertDefinition from '@salesforce/apex/RecordDefinitionService.upsertDefinition';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
 export default class RecordDefinitionCreationModal extends LightningModal {
 
@@ -45,6 +46,8 @@ export default class RecordDefinitionCreationModal extends LightningModal {
             .then(() => {
                 this.close();
                 this.showToast('Success', 'Record saved successfully', 'success');
+                publish('refreshdatatable');
+
             })
             .catch(error => {
                 console.error(error);

@@ -3,10 +3,11 @@ import { refreshApex } from '@salesforce/apex';
 import RecordDefinitionCreationModal from 'c/recordDefinitionCreationModal';
 import RecordCreationModal from 'c/recordCreationModal';
 import getRecordDefinitions from '@salesforce/apex/RecordDefinitionService.getRecordDefinitions';
+import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
 export default class RecordManagement extends LightningElement {
 
-    @track clickedRow;
+    @track isLoading = false; 
 
     async handleClick() {
         const result = await RecordDefinitionCreationModal.open({
@@ -21,25 +22,53 @@ export default class RecordManagement extends LightningElement {
     columns = [
         { label: 'Name', fieldName: 'Name' },
         { label: 'Object', fieldName: 'Object__c' },
-        { label: 'Created Date', fieldName: 'CreatedDate', type: 'date' },
-        { label: 'Last Modified Date', fieldName: 'LastModifiedDate', type: 'date' },
+        {
+            label: 'Created At', 
+            fieldName: 'CreatedDate', 
+            type: 'date', 
+            typeAttributes: {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            },
+            sortable: false 
+        },
+        {
+            label: 'Modified At', 
+            fieldName: 'LastModifiedDate', 
+            type: 'date', 
+            typeAttributes: {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            },
+            sortable: false 
+        },
         { label: 'View Definition', type: 'button', typeAttributes: { label: 'View', name: 'View', title: 'View', disabled: false } },
         { label: 'Create Records', type: 'button', typeAttributes: { label: 'Create', name: 'Create', title: 'Create', disabled: false, variant: 'brand' } }
     ];
 
-    @wire(getRecordDefinitions)
-    wiredRecordDefinitions(result) {
-
-        const { error, data } = result;
-        if (data) {
-            this.recordDefinitions = data;
-        } else if (error) {
-            console.error(error);
-        }
-    }
-
     connectedCallback() {
-        this.refreshData();
+
+        getRecordDefinitions()
+            .then(result => {
+                this.recordDefinitions = result;
+
+            })
+            .catch(error => {
+                console.error(error);
+                this.showToast('Error', error, 'error');
+            });
+
+        subscribe('refreshdatatable', this.handleRefreshDatatable.bind(this));
     }
 
     handleRowAction(event) {
@@ -47,13 +76,6 @@ export default class RecordManagement extends LightningElement {
         const row = event.detail.row;
         switch (action.name) {
             case 'View':
-                this.clickedRow = {
-                    Name: row.Name,
-                    Object__c: row.Object__c
-                };
-
-                console.log(row);
-
                 RecordDefinitionCreationModal.open({
                     size: 'medium',
                     content: row,
@@ -76,7 +98,22 @@ export default class RecordManagement extends LightningElement {
         }
     }
 
-    refreshData() {
-        return refreshApex(this.recordDefinitions);
+    handleRefreshDatatable() {
+
+        this.isLoading = true;
+
+        getRecordDefinitions()
+            .then(result => {
+                this.recordDefinitions = result;
+
+            })
+            .catch(error => {
+                console.error(error);
+                this.showToast('Error', error, 'error');
+            });
+
+        this.isLoading = false;
+
     }
+
 }

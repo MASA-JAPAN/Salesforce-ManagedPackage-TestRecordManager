@@ -1,3 +1,4 @@
+<!-- sldsValidatorIgnore -->
 <template>
     <div class="slds-page-header">
         <div class="slds-page-header__row">
@@ -39,7 +40,19 @@
     </div>
     <br/>
     <lightning-card title="Record Definitions">
+
+        <template if:true={isLoading}>
+            <div class="slds-spinner_container">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </template>
+
         <lightning-datatable
+            hide-checkbox-column
             data={recordDefinitions}
             columns={columns}
             key-field="Id"
