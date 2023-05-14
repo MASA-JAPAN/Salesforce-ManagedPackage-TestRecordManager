@@ -3,6 +3,8 @@ public with sharing class RecordDefinitionService {
     @AuraEnabled
     public static void upsertDefinition(Object recordDefinitionDtoString){
 
+        RecordOperationService.throwIfDefinitionIsInvalid(recordDefinitionDtoString);
+
         RecordDefinitionDto recordDefinitionDto = (RecordDefinitionDto) JSON.deserialize(String.valueOf(recordDefinitionDtoString), RecordDefinitionDto.class);
 
         RecordDefinition__c recordDefinition = new RecordDefinition__c();

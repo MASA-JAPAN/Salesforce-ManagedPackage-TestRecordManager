@@ -1,7 +1,7 @@
 public with sharing class RecordOperationService {
 
     @AuraEnabled
-    public static void createRecords(Integer numberOfCreation, Object recordDefinitionDtoString){
+    public static RecordCreationLog__c createRecords(Integer numberOfCreation, Object recordDefinitionDtoString){
 
         RecordDefinitionDto recordDefinitionDto = (RecordDefinitionDto) JSON.deserialize(String.valueOf(recordDefinitionDtoString), RecordDefinitionDto.class);
 
@@ -28,7 +28,7 @@ public with sharing class RecordOperationService {
             recordsToCreate.add(record);
         }
 
-        Database.SaveResult[] saveResults = Database.insert(recordsToCreate, false);
+        Database.SaveResult[] saveResults = Database.insert(recordsToCreate, true);
 
         RecordCreationLog__c log = new RecordCreationLog__c();
 
@@ -54,7 +54,19 @@ public with sharing class RecordOperationService {
         log.Error_Message__c = errorMessage.abbreviate(131072); // max size of error message
 
         insert log;
+        return log;
 
+    }
+
+    @AuraEnabled
+    public static void throwIfDefinitionIsInvalid(Object recordDefinitionDtoString){
+
+        Savepoint sp = Database.setSavepoint();
+        RecordCreationLog__c resultLog = createRecords(1, recordDefinitionDtoString);
+        Database.rollback(sp);
+        if (resultLog.Error__c > 0) {
+            throw new RecordOperationServiceException(resultLog.Error_Message__c);
+        }
     }
 
     public class RecordOperationServiceException extends Exception {}
