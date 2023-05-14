@@ -26,6 +26,15 @@ export default class RecordDefinitionModal extends LightningModal {
             this.objectName = this.content.Object__c;
             this.inputList = JSON.parse(this.content.Field_Values__c);
 
+            let largestKey = 0;
+            this.inputList.forEach(input => {
+                if (input.key > largestKey) {
+                    largestKey = input.key;
+                }
+            });
+
+            this.nextKey = largestKey + 1;
+
         } catch (error) {
             console.log(error);
         }
