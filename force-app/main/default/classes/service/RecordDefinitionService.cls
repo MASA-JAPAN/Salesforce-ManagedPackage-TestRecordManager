@@ -13,14 +13,14 @@ public with sharing class RecordDefinitionService {
 
         recordDefinition.Name = recordDefinitionDto.name;
         recordDefinition.Object__c = recordDefinitionDto.obj;
-        recordDefinition.Record_Values__c = JSON.serialize(recordDefinitionDto.fieldToValueWithKeys);
+        recordDefinition.Field_Values__c = JSON.serialize(recordDefinitionDto.keyedFieldValues);
 
         Database.upsert(recordDefinition);
     }
 
     @AuraEnabled
     public static List<RecordDefinition__c> getRecordDefinitions() {
-        return [SELECT Id, Name, Object__c, CreatedDate, Record_Values__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
+        return [SELECT Id, Name, Object__c, CreatedDate, Field_Values__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
     }
 
 }

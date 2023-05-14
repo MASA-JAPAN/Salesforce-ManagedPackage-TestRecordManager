@@ -1,6 +1,5 @@
-import { LightningElement, wire, track } from "lwc";
-import { refreshApex } from '@salesforce/apex';
-import RecordDefinitionCreationModal from 'c/recordDefinitionCreationModal';
+import { LightningElement, track } from "lwc";
+import RecordDefinitionModal from 'c/recordDefinitionModal';
 import RecordCreationModal from 'c/recordCreationModal';
 import getRecordDefinitions from '@salesforce/apex/RecordDefinitionService.getRecordDefinitions';
 import { subscribe, unsubscribe, publish } from 'c/pubsub';
@@ -8,15 +7,6 @@ import { subscribe, unsubscribe, publish } from 'c/pubsub';
 export default class RecordManagement extends LightningElement {
 
     @track isLoading = false; 
-
-    async handleClick() {
-        const result = await RecordDefinitionCreationModal.open({
-            size: 'medium',
-            content: null,
-            label: 'Create Record Definition'
-        });
-        console.log(result);
-    }
 
     @track recordDefinitions;
     columns = [
@@ -65,10 +55,18 @@ export default class RecordManagement extends LightningElement {
             })
             .catch(error => {
                 console.error(error);
-                this.showToast('Error', error, 'error');
+                this.showToast('Error', error.body.message, 'error');
             });
 
         subscribe('refreshdatatable', this.handleRefreshDatatable.bind(this));
+    }
+
+    handleClickNewDefinition() {
+        RecordDefinitionModal.open({
+            size: 'medium',
+            content: null,
+            label: 'Record Definition'
+        });
     }
 
     handleRowAction(event) {
@@ -76,10 +74,10 @@ export default class RecordManagement extends LightningElement {
         const row = event.detail.row;
         switch (action.name) {
             case 'View':
-                RecordDefinitionCreationModal.open({
+                RecordDefinitionModal.open({
                     size: 'medium',
                     content: row,
-                    label: 'Create Record Definition'
+                    label: 'Record Definition'
                 });
 
                 break;
@@ -109,7 +107,7 @@ export default class RecordManagement extends LightningElement {
             })
             .catch(error => {
                 console.error(error);
-                this.showToast('Error', error, 'error');
+                this.showToast('Error', error.body.message, 'error');
             });
 
         this.isLoading = false;

@@ -5,7 +5,7 @@
 		<members>RecordCreationLog__c.Error_Message__c</members>
 		<members>RecordCreationLog__c.Error__c</members>
 		<members>RecordCreationLog__c.Success__c</members>
-		<members>RecordDefinition__c.Record_Values__c</members>
+		<members>RecordDefinition__c.Field_Values__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>

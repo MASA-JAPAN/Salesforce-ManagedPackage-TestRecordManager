@@ -6,13 +6,10 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class RecordCreationModal extends LightningModal {
 
     @api content;
-
     @track numberOfCreation;
 
     handleCancel() {
-
         this.close();
-
     }
 
     handleCreate() {
@@ -23,7 +20,7 @@ export default class RecordCreationModal extends LightningModal {
                 id: this.content.Id,
                 name: this.content.Name,
                 obj: this.content.Object__c,
-                fieldToValueWithKeys: JSON.parse(this.content.Record_Values__c)
+                keyedFieldValues: JSON.parse(this.content.Field_Values__c)
             };
     
             const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
@@ -33,11 +30,11 @@ export default class RecordCreationModal extends LightningModal {
             createRecords({ numberOfCreation, recordDefinitionDtoString })
                 .then(() => {
                     this.close();
-                    this.showToast('Success', 'Record saved successfully', 'success');
+                    this.showToast('Success', 'Record created successfully', 'success');
                 })
                 .catch(error => {
-                    console.error(error);
-                    this.showToast('Error', error, 'error');
+                    console.log(JSON.stringify(error));
+                    this.showToast('Error', error.body.message, 'error');
                 });
         } catch (error) {
             console.log( "error: " + error);

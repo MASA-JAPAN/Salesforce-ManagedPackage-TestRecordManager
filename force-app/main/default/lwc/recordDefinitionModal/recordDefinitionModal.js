@@ -4,7 +4,7 @@ import upsertDefinition from '@salesforce/apex/RecordDefinitionService.upsertDef
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
-export default class RecordDefinitionCreationModal extends LightningModal {
+export default class RecordDefinitionModal extends LightningModal {
 
     @track id = "";
     @track definitionName = "";
@@ -24,7 +24,7 @@ export default class RecordDefinitionCreationModal extends LightningModal {
             this.id = this.content.Id;
             this.definitionName = this.content.Name;
             this.objectName = this.content.Object__c;
-            this.inputList = JSON.parse(this.content.Record_Values__c);
+            this.inputList = JSON.parse(this.content.Field_Values__c);
 
         } catch (error) {
             console.log(error);
@@ -37,7 +37,7 @@ export default class RecordDefinitionCreationModal extends LightningModal {
             id: this.id,
             name: this.definitionName,
             obj: this.objectName,
-            fieldToValueWithKeys: this.inputList
+            keyedFieldValues: this.inputList
         };
 
         const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
@@ -45,20 +45,18 @@ export default class RecordDefinitionCreationModal extends LightningModal {
         upsertDefinition({ recordDefinitionDtoString })
             .then(() => {
                 this.close();
-                this.showToast('Success', 'Record saved successfully', 'success');
+                this.showToast('Success', 'Definition saved successfully', 'success');
                 publish('refreshdatatable');
 
             })
             .catch(error => {
                 console.error(error);
-                this.showToast('Error', error, 'error');
+                this.showToast('Error', error.body.message, 'error');
             });
     }
     
     handleCancel() {
-
         this.close();
-
     }
 
   
@@ -66,7 +64,7 @@ export default class RecordDefinitionCreationModal extends LightningModal {
       this.inputList = [...this.inputList, 
         { 
             key: this.nextKey++, 
-            fieldToValue: {
+            fieldValue: {
                 field: "",
                 value: ""
             }
@@ -96,7 +94,7 @@ export default class RecordDefinitionCreationModal extends LightningModal {
         this.inputList = this.inputList.map(input => {
 
             if (input.key == key) {
-                input.fieldToValue.field = inputValue;
+                input.fieldValue.field = inputValue;
             }
 
             return input;
@@ -108,7 +106,7 @@ export default class RecordDefinitionCreationModal extends LightningModal {
         const inputValue = event.target.value;
         this.inputList = this.inputList.map(input => {
             if (input.key == key) {
-                input.fieldToValue.value = inputValue;
+                input.fieldValue.value = inputValue;
             }
             return input;
         });

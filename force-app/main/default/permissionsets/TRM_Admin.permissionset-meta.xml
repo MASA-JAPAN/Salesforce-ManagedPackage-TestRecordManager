@@ -27,7 +27,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>RecordDefinition__c.Record_Values__c</field>
+        <field>RecordDefinition__c.Field_Values__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>RecordDefinition__c.Object__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
@@ -50,8 +55,4 @@
         <object>RecordDefinition__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
-    <tabSettings>
-        <tab>Record_Management</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
 </PermissionSet>

@@ -1,6 +1,6 @@
 <!-- sldsValidatorIgnore -->
 <template>
-    <lightning-modal-header label="Create Record Definition"></lightning-modal-header>
+    <lightning-modal-header label="Record Definition"></lightning-modal-header>
     <lightning-modal-body>
         <lightning-input type="text" label="Definition Name" id="definitionNameInput" value={definitionName} onchange={handleDefinitionNameInputChange}></lightning-input>
         <lightning-input type="text" label="Object" id="ObjectNameInput" value={objectName} onchange={handleObjectNameInputChange}></lightning-input>
@@ -11,7 +11,7 @@
                     <lightning-input
                         type="text"
                         label="API Name"
-                        value={input.fieldToValue.field}
+                        value={input.fieldValue.field}
                         onchange={handleFieldNameInputChange}
                         class="slds-col slds-size_5-of-12"
                         id={input.key}
@@ -19,7 +19,7 @@
                     <lightning-input
                         type="text"
                         label="Value"
-                        value={input.fieldToValue.value}
+                        value={input.fieldValue.value}
                         onchange={handleValueInputChange}
                         class="slds-col slds-size_6-of-12"
                         id={input.key}

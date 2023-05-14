@@ -18,12 +18,12 @@ public with sharing class RecordOperationService {
 
         for (Integer i = 0; i < numberOfCreation; i++) {
             sObject record = objectType.newSObject();
-            for (RecordDefinitionDto.FieldToValueWithKey fieldToValueWithKey : recordDefinitionDto.fieldToValueWithKeys) {
-                String value = fieldToValueWithKey.fieldToValue.value;
+            for (RecordDefinitionDto.KeyedFieldValue keyedFieldValue : recordDefinitionDto.keyedFieldValues) {
+                String value = keyedFieldValue.fieldValue.value;
                 if (value.contains('{0}')) {
                     value = value.replace('{0}', String.valueOf(i));
                 }
-                record.put(fieldToValueWithKey.fieldToValue.field, value);
+                record.put(keyedFieldValue.fieldValue.field, value);
             }
             recordsToCreate.add(record);
         }
