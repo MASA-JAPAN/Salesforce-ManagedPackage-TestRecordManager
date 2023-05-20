@@ -1,16 +1,15 @@
 <!-- sldsValidatorIgnore -->
 <template>
-    <lightning-modal-header label="Record Definition"></lightning-modal-header>
+    <lightning-modal-header label="Test Record Definition"></lightning-modal-header>
     <lightning-modal-body>
         <lightning-input type="text" label="Definition Name" id="definitionNameInput" value={definitionName} onchange={handleDefinitionNameInputChange}></lightning-input>
         <lightning-input type="text" label="Object" id="ObjectNameInput" value={objectName} onchange={handleObjectNameInputChange}></lightning-input>
-        <label class="slds-form-element__label" for="unique-id-of-input">Field Values</label>
         <template for:each={inputList} for:item="input" for:index="index">
             <div key={input.key} class="slds-m-bottom_small">
                 <div class="slds-grid slds-wrap slds-gutters">
                     <lightning-input
                         type="text"
-                        label="API Name"
+                        label="Field API Name"
                         value={input.fieldValue.field}
                         onchange={handleFieldNameInputChange}
                         class="slds-col slds-size_5-of-12"
@@ -35,7 +34,7 @@
             </div>
         </template>
         <div class="slds-m-top_medium">
-            <lightning-button label="Add" onclick={handleAddClick}></lightning-button>
+            <lightning-button label="Add Field Mapping" onclick={handleAddClick}></lightning-button>
         </div>
     </lightning-modal-body>
     <lightning-modal-footer>

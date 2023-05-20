@@ -6,7 +6,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class RecordCreationModal extends LightningModal {
 
     @api content;
-    @track numberOfCreation;
+    @track numberOfCreation = 1;
 
     handleCancel() {
         this.close();

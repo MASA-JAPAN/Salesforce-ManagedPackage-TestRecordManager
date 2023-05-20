@@ -10,7 +10,7 @@ export default class RecordManagement extends LightningElement {
 
     @track recordDefinitions;
     columns = [
-        { label: 'Name', fieldName: 'Name' },
+        { label: 'Definition', fieldName: 'Name' },
         { label: 'Object', fieldName: 'Object__c' },
         {
             label: 'Created At', 
