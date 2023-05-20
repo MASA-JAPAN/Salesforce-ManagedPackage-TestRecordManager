@@ -17,12 +17,20 @@ public with sharing class RecordDefinitionService {
         recordDefinition.Object__c = recordDefinitionDto.obj;
         recordDefinition.Field_Values__c = JSON.serialize(recordDefinitionDto.keyedFieldValues);
 
-        Database.upsert(recordDefinition);
+        upsert recordDefinition;
+
     }
 
     @AuraEnabled
     public static List<RecordDefinition__c> getRecordDefinitions() {
         return [SELECT Id, Name, Object__c, CreatedDate, Field_Values__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
+    }
+
+    @AuraEnabled
+    public static void deleteDefinition(Id id) {
+        RecordDefinition__c recordDefinitionToDelete = new RecordDefinition__c();
+        recordDefinitionToDelete.Id = id;
+        delete recordDefinitionToDelete;
     }
 
 }

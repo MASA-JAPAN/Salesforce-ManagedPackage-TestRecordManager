@@ -1,6 +1,7 @@
 import { api, track } from 'lwc';
 import LightningModal from 'lightning/modal';
 import upsertDefinition from '@salesforce/apex/RecordDefinitionService.upsertDefinition';
+import deleteDefinition from '@salesforce/apex/RecordDefinitionService.deleteDefinition';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
@@ -68,6 +69,19 @@ export default class RecordDefinitionModal extends LightningModal {
         this.close();
     }
 
+    handleDelete() {
+        deleteDefinition({ id: this.id })
+            .then(() => {
+                this.close();
+                this.showToast('Success', 'Definition deleted successfully', 'success');
+                publish('refreshdatatable');
+
+            })
+            .catch(error => {
+                console.error(error);
+                this.showToast('Error', error.body.message, 'error');
+            });
+    }
   
     handleAddClick() {
       this.inputList = [...this.inputList, 
