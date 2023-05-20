@@ -1,6 +1,11 @@
 <!-- sldsValidatorIgnore -->
 <template>
-    <lightning-modal-header label="Test Record Definition"></lightning-modal-header>
+    <lightning-modal-header>
+        <div class="slds-grid slds-grid_align-center">
+            <h1 class="slds-modal__title slds-hyphenate">Test Record Definition</h1>
+            <lightning-helptext content="[ Value tips ] {0}: automatic numbering" class="slds-m-left_small"></lightning-helptext>
+        </div>
+    </lightning-modal-header>
     <lightning-modal-body>
         <lightning-input type="text" label="Definition Name" id="definitionNameInput" value={definitionName} onchange={handleDefinitionNameInputChange}></lightning-input>
         <lightning-input type="text" label="Object" id="ObjectNameInput" value={objectName} onchange={handleObjectNameInputChange}></lightning-input>
