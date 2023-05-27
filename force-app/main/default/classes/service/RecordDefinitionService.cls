@@ -3,7 +3,7 @@ public with sharing class RecordDefinitionService {
     @AuraEnabled
     public static void upsertDefinition(Object recordDefinitionDtoString){
 
-        RecordOperationService.throwIfDefinitionIsInvalid(recordDefinitionDtoString);
+        throwIfDefinitionIsInvalid(recordDefinitionDtoString);
 
         RecordDefinitionDto recordDefinitionDto = (RecordDefinitionDto) JSON.deserialize(String.valueOf(recordDefinitionDtoString), RecordDefinitionDto.class);
 
@@ -32,5 +32,21 @@ public with sharing class RecordDefinitionService {
         recordDefinitionToDelete.Id = id;
         delete recordDefinitionToDelete;
     }
+
+    
+    @AuraEnabled
+    public static void throwIfDefinitionIsInvalid(Object recordDefinitionDtoString){
+
+        Savepoint sp = Database.setSavepoint();
+        try {
+            RecordOperationService.createRecords(1, recordDefinitionDtoString);
+        } catch (Exception e) {
+            throw new RecordDefinitionServiceException('Invalid definition: This definition will cause this error [ ' + e.getMessage() + ']');
+        }
+        Database.rollback(sp);
+
+    }
+
+    public class RecordDefinitionServiceException extends Exception {}
 
 }

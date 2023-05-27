@@ -1,7 +1,7 @@
 public with sharing class RecordOperationService {
 
     @AuraEnabled
-    public static RecordCreationLog__c createRecords(Integer numberOfCreation, Object recordDefinitionDtoString){
+    public static void createRecords(Integer numberOfCreation, Object recordDefinitionDtoString){
 
         RecordDefinitionDto recordDefinitionDto = (RecordDefinitionDto) JSON.deserialize(String.valueOf(recordDefinitionDtoString), RecordDefinitionDto.class);
 
@@ -28,45 +28,8 @@ public with sharing class RecordOperationService {
             recordsToCreate.add(record);
         }
 
-        Database.SaveResult[] saveResults = Database.insert(recordsToCreate, true);
+        insert recordsToCreate;
 
-        RecordCreationLog__c log = new RecordCreationLog__c();
-
-        Integer success = 0;
-        List<Id> createdRecordIds = new List<Id>();
-        Integer error = 0;
-        String errorMessage = '';
-
-        for (Database.SaveResult result : saveResults) {
-            if (result.isSuccess()) {
-                success++;
-                createdRecordIds.add(result.getId());
-            } else {
-                error++;
-                errorMessage += '[' + result.getErrors() + ']';
-            }
-        }
-
-        log.Object__c = recordDefinitionDto.obj;
-        log.Success__c = success;
-        log.Created_Record_Ids__c = createdRecordIds.toString();
-        log.Error__c = error;
-        log.Error_Message__c = errorMessage.abbreviate(131072); // max size of error message
-
-        insert log;
-        return log;
-
-    }
-
-    @AuraEnabled
-    public static void throwIfDefinitionIsInvalid(Object recordDefinitionDtoString){
-
-        Savepoint sp = Database.setSavepoint();
-        RecordCreationLog__c resultLog = createRecords(1, recordDefinitionDtoString);
-        Database.rollback(sp);
-        if (resultLog.Error__c > 0) {
-            throw new RecordOperationServiceException(resultLog.Error_Message__c);
-        }
     }
 
     public class RecordOperationServiceException extends Exception {}
