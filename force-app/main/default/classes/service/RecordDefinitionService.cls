@@ -15,7 +15,7 @@ public with sharing class RecordDefinitionService {
 
         recordDefinition.Name = recordDefinitionDto.name;
         recordDefinition.Object__c = recordDefinitionDto.obj;
-        recordDefinition.Field_Values__c = JSON.serialize(recordDefinitionDto.keyedFieldValues);
+        recordDefinition.FieldValues__c = JSON.serialize(recordDefinitionDto.keyedFieldValues);
 
         upsert recordDefinition;
 
@@ -23,7 +23,7 @@ public with sharing class RecordDefinitionService {
 
     @AuraEnabled
     public static List<RecordDefinition__c> getRecordDefinitions() {
-        return [SELECT Id, Name, Object__c, CreatedDate, Field_Values__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
+        return [SELECT Id, Name, Object__c, CreatedDate, FieldValues__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
     }
 
     @AuraEnabled

@@ -20,7 +20,7 @@ export default class RecordCreationModal extends LightningModal {
                 id: this.content.Id,
                 name: this.content.Name,
                 obj: this.content.Object__c,
-                keyedFieldValues: JSON.parse(this.content.Field_Values__c)
+                keyedFieldValues: JSON.parse(this.content.FieldValues__c)
             };
     
             const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);

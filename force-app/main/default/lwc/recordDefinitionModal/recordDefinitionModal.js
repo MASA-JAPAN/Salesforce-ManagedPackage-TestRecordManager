@@ -25,7 +25,7 @@ export default class RecordDefinitionModal extends LightningModal {
             this.id = this.content.Id;
             this.definitionName = this.content.Name;
             this.objectName = this.content.Object__c;
-            this.inputList = JSON.parse(this.content.Field_Values__c);
+            this.inputList = JSON.parse(this.content.FieldValues__c);
 
             let largestKey = 0;
             this.inputList.forEach(input => {
