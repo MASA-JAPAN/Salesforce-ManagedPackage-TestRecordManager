@@ -6,7 +6,7 @@
     }
   ],
   "name": "TestRecordManager",
-  "namespace": "",
+  "namespace": "MJ_TRM",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "55.0"
 }

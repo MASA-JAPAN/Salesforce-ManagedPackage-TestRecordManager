@@ -1,0 +1,62 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-opportunity">
+                            <lightning-icon icon-name="standard:record" alternative-text="record" title="record"></lightning-icon>
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span>Test Record Management</span>
+                                    <span class="slds-page-header__title slds-truncate">Test Record Definitions</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <div class="slds-page-header__control">
+                        <ul class="slds-button-group-list">
+                            <li>
+                                <lightning-button
+                                    onclick={handleClickNewDefinition}
+                                    aria-haspopup="dialog"
+                                    label="New Definition">
+                                </lightning-button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <lightning-card>
+
+        <template if:true={isLoading}>
+            <div class="slds-spinner_container">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </template>
+
+        <lightning-datatable
+            hide-checkbox-column
+            data={recordDefinitions}
+            columns={columns}
+            key-field="Id"
+            onrowaction={handleRowAction}
+        ></lightning-datatable>
+    </lightning-card>
+</template> 
