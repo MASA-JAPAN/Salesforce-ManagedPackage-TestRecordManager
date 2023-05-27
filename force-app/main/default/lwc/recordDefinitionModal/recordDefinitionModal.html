@@ -45,7 +45,7 @@
     <lightning-modal-footer>
         <div class="slds-grid slds-grid_align-spread">
             <div>
-                <lightning-button label="Delete" onclick={handleDelete} variant="destructive" class="slds-m-right_x-small"></lightning-button>
+                <lightning-button if:true={id} label="Delete" onclick={handleDelete} variant="destructive" class="slds-m-right_x-small"></lightning-button>
             </div>
             <div>
                 <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-horizontal_x-small"></lightning-button>
