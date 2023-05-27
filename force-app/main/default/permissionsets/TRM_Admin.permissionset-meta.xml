@@ -6,7 +6,12 @@
     </applicationVisibilities>
     <fieldPermissions>
         <editable>true</editable>
-        <field>RecordDefinition__c.FieldValues__c</field>
+        <field>RecordDefinition__c.ConfigToInsert__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>RecordDefinition__c.FieldValuesToEdit__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
