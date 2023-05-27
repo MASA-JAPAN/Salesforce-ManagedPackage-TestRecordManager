@@ -1,0 +1,56 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <div class="slds-modal__header">
+        <div class="slds-grid slds-grid_align-center">
+            <h1 class="slds-modal__title slds-hyphenate">Test Record Definition</h1>
+            <lightning-helptext content="[ Value tips ] {0}: automatic numbering" class="slds-m-left_small"></lightning-helptext>
+        </div>
+    </div>
+    <lightning-modal-body>
+        <lightning-input type="text" label="Definition Name" id="definitionNameInput" value={definitionName} onchange={handleDefinitionNameInputChange}></lightning-input>
+        <lightning-input type="text" label="Object" id="ObjectNameInput" value={objectName} onchange={handleObjectNameInputChange}></lightning-input>
+        <template for:each={inputList} for:item="input" for:index="index">
+            <div key={input.key} class="slds-m-bottom_small">
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <lightning-input
+                        type="text"
+                        label="Field API Name"
+                        value={input.fieldValue.field}
+                        onchange={handleFieldNameInputChange}
+                        class="slds-col slds-size_5-of-12"
+                        id={input.key}
+                    ></lightning-input>
+                    <lightning-input
+                        type="text"
+                        label="Value"
+                        value={input.fieldValue.value}
+                        onchange={handleValueInputChange}
+                        class="slds-col slds-size_6-of-12"
+                        id={input.key}
+                    ></lightning-input>
+                    <lightning-button-icon
+                        icon-name="utility:delete"
+                        alternative-text="Delete"
+                        onclick={handleDeleteClick}
+                        data-index={index}
+                        class="slds-col slds-size_1-of-12 slds-align_absolute-center slds-m-bottom_none"
+                    ><label>delete</label></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <div class="slds-m-top_medium slds-text-align_center">
+            <lightning-button label="Add Field Mapping" onclick={handleAddClick}></lightning-button>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid slds-grid_align-spread">
+            <div>
+                <lightning-button if:true={id} label="Delete" onclick={handleDelete} variant="destructive" class="slds-m-right_x-small"></lightning-button>
+            </div>
+            <div>
+                <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-horizontal_x-small"></lightning-button>
+                <lightning-button label="Save" onclick={handleSave} variant="brand" class="slds-m-horizontal_x-small"></lightning-button>
+            </div>
+        </div>
+    </lightning-modal-footer>
+</template>
