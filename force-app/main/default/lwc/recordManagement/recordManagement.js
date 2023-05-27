@@ -11,7 +11,7 @@ export default class RecordManagement extends LightningElement {
     @track recordDefinitions;
     columns = [
         { label: 'Definition', fieldName: 'Name' },
-        { label: 'Object', fieldName: 'Object__c' },
+        { label: 'Object', fieldName: 'MJ_TRM__Object__c' },
         {
             label: 'Created At', 
             fieldName: 'CreatedDate', 

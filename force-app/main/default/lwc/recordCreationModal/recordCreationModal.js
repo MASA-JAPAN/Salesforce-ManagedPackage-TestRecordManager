@@ -16,18 +16,10 @@ export default class RecordCreationModal extends LightningModal {
 
         try {
 
-            const recordDefinitionDto = {
-                id: this.content.Id,
-                name: this.content.Name,
-                obj: this.content.Object__c,
-                keyedFieldValues: JSON.parse(this.content.FieldValues__c)
-            };
-    
-            const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
-
             const numberOfCreation = this.numberOfCreation;
+            const configToInsertDtoString = this.content.MJ_TRM__ConfigToInsert__c;
     
-            createRecords({ numberOfCreation, recordDefinitionDtoString })
+            createRecords({ numberOfCreation, configToInsertDtoString })
                 .then(() => {
                     this.close();
                     this.showToast('Success', 'Record created successfully', 'success');

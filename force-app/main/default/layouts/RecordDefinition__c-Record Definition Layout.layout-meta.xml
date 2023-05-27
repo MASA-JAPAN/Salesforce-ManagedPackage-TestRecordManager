@@ -16,7 +16,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>FieldValues__c</field>
+                <field>ConfigToInsert__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>FieldValuesToEdit__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
