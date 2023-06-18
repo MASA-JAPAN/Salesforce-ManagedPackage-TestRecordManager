@@ -1,4 +1,6 @@
 <template>
+    <lightning-spinner if:true={isSpinning} class="slds-align_absolute-center" style="position: fixed; margin: -50rem">
+    </lightning-spinner>
     <lightning-modal-header label="Record Creation"></lightning-modal-header>
     <lightning-modal-body>
         <lightning-input type="number" label="Number of creation" value={numberOfCreation} onchange={handleNumberOfCreationInputChange}></lightning-input>

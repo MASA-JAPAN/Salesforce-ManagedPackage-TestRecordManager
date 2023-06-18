@@ -6,7 +6,7 @@ import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
 export default class RecordManagement extends LightningElement {
 
-    @track isLoading = false; 
+    @track isSpinning = false; 
 
     @track recordDefinitions;
     columns = [
@@ -98,7 +98,7 @@ export default class RecordManagement extends LightningElement {
 
     handleRefreshDatatable() {
 
-        this.isLoading = true;
+        this.openSpinner();
 
         getRecordDefinitions()
             .then(result => {
@@ -108,10 +108,19 @@ export default class RecordManagement extends LightningElement {
             .catch(error => {
                 console.error(error);
                 this.showToast('Error', error.body.message, 'error');
+            })
+            .finally(() => {
+                this.closeSpinner();
             });
 
-        this.isLoading = false;
+    }
 
+    openSpinner() {
+        this.isSpinning = true;
+    }
+
+    closeSpinner() {
+        this.isSpinning = false;
     }
 
 }
