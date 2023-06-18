@@ -25,6 +25,16 @@
                     </div>
                 </div>
             </div>
+
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <lightning-icon class="slds-align_absolute-center slds-m-right_xx-small" icon-name="utility:search" alternative-text="search" title="search" size="small"></lightning-icon>
+                    <div class="slds-form-element__control slds-m-right_x-small">
+                        <input type="text" placeholder="Search definition…" required="" class="slds-input" onchange={handleSearchInputChange} onkeydown={keyEventOfSearchInput}/>
+                    </div>
+                </div>
+            </div>
+
             <div class="slds-page-header__col-actions">
                 <div class="slds-page-header__controls">
                     <div class="slds-page-header__control">

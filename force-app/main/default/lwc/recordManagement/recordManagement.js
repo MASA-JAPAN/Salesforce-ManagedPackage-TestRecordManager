@@ -1,12 +1,14 @@
 import { LightningElement, track } from "lwc";
 import RecordDefinitionModal from 'c/recordDefinitionModal';
 import RecordCreationModal from 'c/recordCreationModal';
-import getRecordDefinitions from '@salesforce/apex/RecordDefinitionService.getRecordDefinitions';
+import getAllRecordDefinitions from '@salesforce/apex/RecordDefinitionService.getAllRecordDefinitions';
+import searchRecordDefinitions from '@salesforce/apex/RecordDefinitionService.searchRecordDefinitions';
 import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
 export default class RecordManagement extends LightningElement {
 
-    @track isSpinning = false; 
+    @track isSpinning = false;
+    @track searchInput = "";
 
     @track recordDefinitions;
     columns = [
@@ -48,7 +50,7 @@ export default class RecordManagement extends LightningElement {
 
     connectedCallback() {
 
-        getRecordDefinitions()
+        getAllRecordDefinitions()
             .then(result => {
                 this.recordDefinitions = result;
 
@@ -100,7 +102,7 @@ export default class RecordManagement extends LightningElement {
 
         this.openSpinner();
 
-        getRecordDefinitions()
+        searchRecordDefinitions({searchInput: this.searchInput})
             .then(result => {
                 this.recordDefinitions = result;
 
@@ -113,6 +115,31 @@ export default class RecordManagement extends LightningElement {
                 this.closeSpinner();
             });
 
+    }
+
+    handleSearchInputChange(event) {
+        const inputValue = event.target.value;
+        this.searchInput = inputValue;
+    }
+
+    keyEventOfSearchInput(event) {
+        if (event.key == 'Enter') {
+
+            this.openSpinner();
+
+            searchRecordDefinitions({searchInput: event.target.value})
+                .then(result => {
+                    this.recordDefinitions = result;
+                })
+                .catch(error => {
+                    console.error(error);
+                    this.showToast('Error', error.body.message, 'error');
+                })
+                .finally(() => {
+                    this.closeSpinner();
+                });
+
+        }
     }
 
     openSpinner() {
