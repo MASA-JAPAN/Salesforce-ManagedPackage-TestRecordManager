@@ -7,6 +7,8 @@ import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
 export default class RecordDefinitionModal extends LightningModal {
 
+    @track isSpinning = false;
+
     @track id = "";
     @track definitionName = "";
     @track objectName = "";
@@ -51,17 +53,20 @@ export default class RecordDefinitionModal extends LightningModal {
         };
 
         const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
+        this.openSpinner();
 
         upsertDefinition({ recordDefinitionDtoString })
             .then(() => {
                 this.close();
                 this.showToast('Success', 'Definition saved successfully', 'success');
                 publish('refreshdatatable');
-
             })
             .catch(error => {
                 console.error(error);
                 this.showToast('Error', error.body.message, 'error');
+            })
+            .finally(() => {
+                this.closeSpinner();
             });
     }
     
@@ -70,6 +75,9 @@ export default class RecordDefinitionModal extends LightningModal {
     }
 
     handleDelete() {
+
+        this.openSpinner();
+
         deleteDefinition({ id: this.id })
             .then(() => {
                 this.close();
@@ -80,6 +88,9 @@ export default class RecordDefinitionModal extends LightningModal {
             .catch(error => {
                 console.error(error);
                 this.showToast('Error', error.body.message, 'error');
+            })
+            .finally(() => {
+                this.closeSpinner();
             });
     }
   
@@ -142,6 +153,14 @@ export default class RecordDefinitionModal extends LightningModal {
           variant: variant
         });
         this.dispatchEvent(event);
+    }
+
+    openSpinner() {
+        this.isSpinning = true;
+    }
+
+    closeSpinner() {
+        this.isSpinning = false;
     }
 
 }

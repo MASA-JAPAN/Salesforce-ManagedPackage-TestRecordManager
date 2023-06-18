@@ -37,7 +37,7 @@ private class RecordDefinitionServiceTest {
 
 
     @isTest
-    static void testGetRecordDefinitions() {
+    static void testGetAllRecordDefinitions() {
         // Test data setup
         RecordDefinition__c recordDefinition = new RecordDefinition__c();
         recordDefinition.Name = 'Test Definition Name';
@@ -47,7 +47,7 @@ private class RecordDefinitionServiceTest {
 
         // Test method execution
         Test.startTest();
-        List<RecordDefinition__c> recordDefinitions = RecordDefinitionService.getRecordDefinitions();
+        List<RecordDefinition__c> recordDefinitions = RecordDefinitionService.getAllRecordDefinitions();
         Test.stopTest();
 
         // Assertion
@@ -56,6 +56,34 @@ private class RecordDefinitionServiceTest {
         System.assertEquals('Test Definition Name', fetchedRecordDefinition.Name);
         System.assertEquals('Account', fetchedRecordDefinition.Object__c);
         System.assertEquals('[{"key":"key-0","fieldValue":{"value":"Test-Company","field":"Name"}}]', fetchedRecordDefinition.FieldValuesToEdit__c);
+    }
+
+    @isTest
+    static void testSearchRecordDefinitions() {
+        // Test data setup
+        RecordDefinition__c recordDefinition1 = new RecordDefinition__c();
+        recordDefinition1.Name = 'Test Account Definition Name 1';
+        recordDefinition1.Object__c = 'Account';
+        recordDefinition1.FieldValuesToEdit__c = '[{"key":"key-0","fieldValue":{"value":"Test-Company-1","field":"Name"}}]';
+        insert recordDefinition1;
+
+        RecordDefinition__c recordDefinition2 = new RecordDefinition__c();
+        recordDefinition2.Name = 'Test Account Definition Name 2';
+        recordDefinition2.Object__c = 'Account';
+        recordDefinition2.FieldValuesToEdit__c = '[{"key":"key-1","fieldValue":{"value":"Test-Company-2","field":"Name"}}]';
+        insert recordDefinition2;
+
+        // Test method execution
+        Test.startTest();
+        List<RecordDefinition__c> recordDefinitions = RecordDefinitionService.searchRecordDefinitions('Test Account Definition Name 2');
+        Test.stopTest();
+
+        // Assertion
+        System.assertEquals(1, recordDefinitions.size());
+        RecordDefinition__c fetchedRecordDefinition = recordDefinitions[0];
+        System.assertEquals('Test Account Definition Name 2', fetchedRecordDefinition.Name);
+        System.assertEquals('Account', fetchedRecordDefinition.Object__c);
+        System.assertEquals('[{"key":"key-1","fieldValue":{"value":"Test-Company-2","field":"Name"}}]', fetchedRecordDefinition.FieldValuesToEdit__c);
     }
 
     @isTest
