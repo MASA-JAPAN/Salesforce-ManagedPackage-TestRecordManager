@@ -22,8 +22,20 @@ public with sharing class RecordDefinitionService {
     }
 
     @AuraEnabled
-    public static List<RecordDefinition__c> getRecordDefinitions() {
+    public static List<RecordDefinition__c> getAllRecordDefinitions() {
         return [SELECT Id, Name, Object__c, CreatedDate, FieldValuesToEdit__c, ConfigToInsert__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
+    }
+
+    @AuraEnabled
+    public static List<RecordDefinition__c> searchRecordDefinitions(String searchInput) {
+
+        if (String.isEmpty(searchInput)) {
+            return getAllRecordDefinitions();
+        } else {
+            String searchInputForPartialMatch = '%' + searchInput + '%'; 
+            return [SELECT Id, Name, Object__c, CreatedDate, FieldValuesToEdit__c, ConfigToInsert__c, LastModifiedDate FROM RecordDefinition__c WHERE Name LIKE :searchInputForPartialMatch ORDER BY LastModifiedDate DESC];            
+        }
+
     }
 
     @AuraEnabled

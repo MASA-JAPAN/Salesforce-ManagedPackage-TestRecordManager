@@ -5,6 +5,8 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class RecordCreationModal extends LightningModal {
 
+    @track isSpinning = false;
+
     @api content;
     @track numberOfCreation = 1;
 
@@ -19,6 +21,8 @@ export default class RecordCreationModal extends LightningModal {
             const numberOfCreation = this.numberOfCreation;
             const configToInsertDtoString = this.content.MJ_TRM__ConfigToInsert__c;
     
+            this.openSpinner();
+
             createRecords({ numberOfCreation, configToInsertDtoString })
                 .then(() => {
                     this.close();
@@ -27,6 +31,9 @@ export default class RecordCreationModal extends LightningModal {
                 .catch(error => {
                     console.log(JSON.stringify(error));
                     this.showToast('Error', error.body.message, 'error');
+                })
+                .finally(() => {
+                    this.closeSpinner();
                 });
         } catch (error) {
             console.log( "error: " + error);
@@ -48,5 +55,14 @@ export default class RecordCreationModal extends LightningModal {
         });
         this.dispatchEvent(event);
     }
+
+    openSpinner() {
+        this.isSpinning = true;
+    }
+
+    closeSpinner() {
+        this.isSpinning = false;
+    }
+
 
 }

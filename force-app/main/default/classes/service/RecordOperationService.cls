@@ -5,8 +5,8 @@ public with sharing class RecordOperationService {
 
         ConfigToInsertDto configToInsert = (ConfigToInsertDto) JSON.deserialize(String.valueOf(configToInsertDtoString), ConfigToInsertDto.class);
 
-        if (numberOfCreation > 5000) {
-            throw new RecordOperationServiceException('Max size is 5000');
+        if (numberOfCreation > 10000) {
+            throw new RecordOperationServiceException('Max size is 10000');
         }
 
         Schema.SObjectType objectType = Schema.getGlobalDescribe().get(configToInsert.obj);
