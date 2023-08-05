@@ -1,28 +1,24 @@
 public with sharing class RecordOperationService {
 
     @AuraEnabled
-    public static void createRecords(Integer numberOfCreation, Object configToInsertDtoString){
+    public static void createRecords (List<Object> configToInsertDtoStrings){
 
-        ConfigToInsertDto configToInsert = (ConfigToInsertDto) JSON.deserialize(String.valueOf(configToInsertDtoString), ConfigToInsertDto.class);
-
-        if (numberOfCreation > 10000) {
-            throw new RecordOperationServiceException('Max size is 10000');
+        if (configToInsertDtoStrings.size() == 0) {
+            throw new RecordOperationServiceException('Choose definitions to create records');
         }
-
-        Schema.SObjectType objectType = Schema.getGlobalDescribe().get(configToInsert.obj);
 
         List<sObject> recordsToCreate = new List<sObject>();
 
-        for (Integer i = 0; i < numberOfCreation; i++) {
+        for (Object configToInsertDtoString : configToInsertDtoStrings) {
+            ConfigToInsertDto configToInsert = (ConfigToInsertDto) JSON.deserialize(String.valueOf(configToInsertDtoString), ConfigToInsertDto.class);
+            Schema.SObjectType objectType = Schema.getGlobalDescribe().get(configToInsert.obj);
+
             sObject record = objectType.newSObject();
             for (ConfigToInsertDto.FieldValue fieldValue : configToInsert.fieldValues) {
 
                 switch on fieldValue.field.dataType {
                     when 'STRING' {
                         String value = fieldValue.value;
-                        if (value.contains('{0}')) {
-                            value = value.replace('{0}', String.valueOf(i));
-                        }
                         record.put(fieldValue.field.apiName, value);
                     }
                     when 'BOOLEAN' {
@@ -31,23 +27,14 @@ public with sharing class RecordOperationService {
                     }
                     when 'INTEGER' {
                         String value = fieldValue.value;
-                        if (value.contains('{0}')) {
-                            value = value.replace('{0}', String.valueOf(i));
-                        }
                         record.put(fieldValue.field.apiName, Integer.valueOf(value));
                     }
                     when 'DOUBLE' {
                         String value = fieldValue.value;
-                        if (value.contains('{0}')) {
-                            value = value.replace('{0}', String.valueOf(i));
-                        }
                         record.put(fieldValue.field.apiName, Double.valueOf(value));
                     }
                     when 'DECIMAL' {
                         String value = fieldValue.value;
-                        if (value.contains('{0}')) {
-                            value = value.replace('{0}', String.valueOf(i));
-                        }
                         record.put(fieldValue.field.apiName, Decimal.valueOf(value));
                     }
                     when 'DATETIME' {
@@ -56,9 +43,6 @@ public with sharing class RecordOperationService {
                     }
                     when else {
                         String value = fieldValue.value;
-                        if (value.contains('{0}')) {
-                            value = value.replace('{0}', String.valueOf(i));
-                        }
                         record.put(fieldValue.field.apiName, value);
                     }
                 }
@@ -66,11 +50,13 @@ public with sharing class RecordOperationService {
 
             }
             recordsToCreate.add(record);
+
         }
 
         insert recordsToCreate;
 
     }
+
 
     public class RecordOperationServiceException extends Exception {}
 

@@ -1,8 +1,9 @@
 import { LightningElement, track } from "lwc";
 import RecordDefinitionModal from 'c/recordDefinitionModal';
-import RecordCreationModal from 'c/recordCreationModal';
 import getAllRecordDefinitions from '@salesforce/apex/RecordDefinitionService.getAllRecordDefinitions';
 import searchRecordDefinitions from '@salesforce/apex/RecordDefinitionService.searchRecordDefinitions';
+import createRecords from '@salesforce/apex/RecordOperationService.createRecords';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
 export default class RecordManagement extends LightningElement {
@@ -44,8 +45,7 @@ export default class RecordManagement extends LightningElement {
             },
             sortable: false 
         },
-        { label: 'View Definition', type: 'button', typeAttributes: { label: 'View', name: 'View', title: 'View', disabled: false } },
-        { label: 'Create Records', type: 'button', typeAttributes: { label: 'Create', name: 'Create', title: 'Create', disabled: false, variant: 'brand' } }
+        { label: 'View Definition', type: 'button', typeAttributes: { label: 'View', name: 'View', title: 'View', disabled: false } }
     ];
 
     connectedCallback() {
@@ -71,6 +71,38 @@ export default class RecordManagement extends LightningElement {
         });
     }
 
+    handleClickCreateRecords() {
+
+        try {
+    
+            this.openSpinner();
+
+            let selectedDefinitions = this.template.querySelector("lightning-datatable").getSelectedRows();
+            let configToInsertDtoStrings = [];
+
+            for (let index = 0; index < selectedDefinitions.length; index++) {
+                const selectedDefinition = selectedDefinitions[index];
+                configToInsertDtoStrings.push(selectedDefinition.MJ_TRM__ConfigToInsert__c);
+            }
+
+            createRecords({ configToInsertDtoStrings })
+                .then(() => {
+                    this.showToast('Success', 'Record created successfully', 'success');
+                    this.template.querySelector('lightning-datatable').selectedRows=[];
+                })
+                .catch(error => {
+                    this.showToast('Error', error.body.message, 'error');
+                    console.log(JSON.stringify(error));
+                })
+                .finally(() => {
+                    this.closeSpinner();
+                });
+        } catch (error) {
+            console.log( "error: " + error);
+        }
+
+    }
+
     handleRowAction(event) {
         const action = event.detail.action;
         const row = event.detail.row;
@@ -81,16 +113,6 @@ export default class RecordManagement extends LightningElement {
                     content: row,
                     label: 'Record Definition'
                 });
-
-                break;
-            case 'Create':
-
-                RecordCreationModal.open({
-                    size: 'small',
-                    content: row,
-                    label: 'Record Creation'
-                });
-
 
                 break;
             default:
@@ -149,5 +171,15 @@ export default class RecordManagement extends LightningElement {
     closeSpinner() {
         this.isSpinning = false;
     }
+
+    showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+          title: title,
+          message: message,
+          variant: variant
+        });
+        this.dispatchEvent(event);
+    }
+
 
 }
