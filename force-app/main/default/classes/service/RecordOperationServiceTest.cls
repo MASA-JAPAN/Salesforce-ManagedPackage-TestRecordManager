@@ -11,7 +11,7 @@ private class RecordOperationServiceTest {
         fieldValue.field = new ConfigToInsertDto.Field();
         fieldValue.field.apiName = 'Name';
         fieldValue.field.dataType = 'STRING';
-        fieldValue.value = 'Test-Company-{0}';
+        fieldValue.value = 'Test-Company';
 
         configToInsertDto.fieldValues.add(fieldValue);
 
@@ -20,7 +20,7 @@ private class RecordOperationServiceTest {
         // Test method execution
         Test.startTest();
         try {
-            RecordOperationService.createRecords(2, configToInsertDtoString);
+            RecordOperationService.createRecords(new List<Object>{configToInsertDtoString});
         } catch (Exception e) {
             // This try/catch is for avoiding custom validation
             return;
@@ -30,9 +30,8 @@ private class RecordOperationServiceTest {
 
         // Assertion
         List<Account> records = [SELECT Id, Name FROM Account ORDER BY Name];
-        System.assertEquals(2, records.size());
-        System.assertEquals('Test-Company-0', records[0].Name);
-        System.assertEquals('Test-Company-1', records[1].Name);
+        System.assertEquals(1, records.size());
+        System.assertEquals('Test-Company', records[0].Name);
 
     }
 
@@ -65,7 +64,7 @@ private class RecordOperationServiceTest {
         // Test method execution
         Test.startTest();
         try {
-            RecordOperationService.createRecords(2, configToInsertDtoString);
+            RecordOperationService.createRecords(new List<Object>{configToInsertDtoString});
         } catch (Exception e) {
             System.debug(e.getMessage());
             System.debug(e.getLineNumber());
@@ -104,7 +103,7 @@ private class RecordOperationServiceTest {
         // Test method execution
         Test.startTest();
         try {
-            RecordOperationService.createRecords(2, configToInsertDtoString);
+            RecordOperationService.createRecords(new List<Object>{configToInsertDtoString});
         } catch (Exception e) {
             System.debug(e.getMessage());
             System.debug(e.getLineNumber());
@@ -144,7 +143,7 @@ private class RecordOperationServiceTest {
         // Test method execution
         Test.startTest();
         try {
-            RecordOperationService.createRecords(2, configToInsertDtoString);
+            RecordOperationService.createRecords(new List<Object>{configToInsertDtoString});
         } catch (Exception e) {
             System.debug(e.getMessage());
             System.debug(e.getLineNumber());
@@ -183,7 +182,7 @@ private class RecordOperationServiceTest {
         // Test method execution
         Test.startTest();
         try {
-            RecordOperationService.createRecords(2, configToInsertDtoString);
+            RecordOperationService.createRecords(new List<Object>{configToInsertDtoString});
         } catch (Exception e) {
             System.debug(e.getMessage());
             System.debug(e.getLineNumber());
@@ -223,7 +222,7 @@ private class RecordOperationServiceTest {
         // Test method execution
         Test.startTest();
         try {
-            RecordOperationService.createRecords(2, configToInsertDtoString);
+            RecordOperationService.createRecords(new List<Object>{configToInsertDtoString});
         } catch (Exception e) {
             System.debug(e.getMessage());
             System.debug(e.getLineNumber());

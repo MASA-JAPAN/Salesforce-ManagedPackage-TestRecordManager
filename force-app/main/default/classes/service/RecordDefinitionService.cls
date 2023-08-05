@@ -74,7 +74,7 @@ public with sharing class RecordDefinitionService {
 
         Savepoint sp = Database.setSavepoint();
         try {
-            RecordOperationService.createRecords(1, JSON.serialize(configToInsert));
+            RecordOperationService.createRecords(new List<Object>{JSON.serialize(configToInsert)});
         } catch (Exception e) {
             throw new RecordDefinitionServiceException('Invalid definition: This definition will cause this error [ ' + e.getMessage() + ']');
         }

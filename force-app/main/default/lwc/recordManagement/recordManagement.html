@@ -29,7 +29,7 @@
             <div class="slds-page-header__col-actions">
                 <div class="slds-page-header__controls">
                     <lightning-icon class="slds-align_absolute-center slds-m-right_xx-small" icon-name="utility:search" alternative-text="search" title="search" size="small"></lightning-icon>
-                    <div class="slds-form-element__control slds-m-right_x-small">
+                    <div class="slds-form-element__control">
                         <input type="text" placeholder="Search definition…" required="" class="slds-input" onchange={handleSearchInputChange} onkeydown={keyEventOfSearchInput}/>
                     </div>
                 </div>
@@ -50,16 +50,31 @@
                     </div>
                 </div>
             </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <div class="slds-page-header__control">
+                        <ul class="slds-button-group-list">
+                            <li>
+                                <lightning-button
+                                    onclick={handleClickCreateRecords}
+                                    aria-haspopup="dialog"
+                                    label="Create Records"
+                                    variant="brand">
+                                </lightning-button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <br/>
-    <lightning-card>
+    <div>
         <lightning-datatable
-            hide-checkbox-column
             data={recordDefinitions}
             columns={columns}
             key-field="Id"
             onrowaction={handleRowAction}
         ></lightning-datatable>
-    </lightning-card>
+    </div>
 </template> 
