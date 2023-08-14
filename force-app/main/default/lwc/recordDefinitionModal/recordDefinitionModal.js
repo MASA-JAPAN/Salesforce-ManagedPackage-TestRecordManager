@@ -2,7 +2,7 @@ import { api, track } from 'lwc';
 import LightningModal from 'lightning/modal';
 import upsertDefinition from '@salesforce/apex/RecordDefinitionService.upsertDefinition';
 import deleteDefinition from '@salesforce/apex/RecordDefinitionService.deleteDefinition';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+// import { ShowToastEvent } from 'lightning/platformShowToastEvent'; // It is not possible to use ShowToastEvent from LightningModal because there is a bug in LWC.
 import { subscribe, unsubscribe, publish } from 'c/pubsub';
 
 export default class RecordDefinitionModal extends LightningModal {
@@ -58,12 +58,12 @@ export default class RecordDefinitionModal extends LightningModal {
         upsertDefinition({ recordDefinitionDtoString })
             .then(() => {
                 this.close();
-                this.showToast('Success', 'Definition saved successfully', 'success');
+                publish('showSuccessToast');
                 publish('refreshdatatable');
             })
             .catch(error => {
                 console.error(error);
-                this.showToast('Error', error.body.message, 'error');
+                publish('showErrorToast');
             })
             .finally(() => {
                 this.closeSpinner();
@@ -81,13 +81,13 @@ export default class RecordDefinitionModal extends LightningModal {
         deleteDefinition({ id: this.id })
             .then(() => {
                 this.close();
-                this.showToast('Success', 'Definition deleted successfully', 'success');
+                publish('showSuccessToast');
                 publish('refreshdatatable');
 
             })
             .catch(error => {
                 console.error(error);
-                this.showToast('Error', error.body.message, 'error');
+                publish('showErrorToast');
             })
             .finally(() => {
                 this.closeSpinner();
@@ -144,15 +144,6 @@ export default class RecordDefinitionModal extends LightningModal {
             }
             return input;
         });
-    }
-
-    showToast(title, message, variant) {
-        const event = new ShowToastEvent({
-          title: title,
-          message: message,
-          variant: variant
-        });
-        this.dispatchEvent(event);
     }
 
     openSpinner() {
