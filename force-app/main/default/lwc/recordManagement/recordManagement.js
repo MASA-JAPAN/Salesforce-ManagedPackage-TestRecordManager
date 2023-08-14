@@ -61,6 +61,8 @@ export default class RecordManagement extends LightningElement {
             });
 
         subscribe('refreshdatatable', this.handleRefreshDatatable.bind(this));
+        subscribe('showSuccessToast', this.showSuccessToast.bind(this));
+        subscribe('showErrorToast', this.showErrorToast.bind(this));
     }
 
     handleClickNewDefinition() {
@@ -181,5 +183,22 @@ export default class RecordManagement extends LightningElement {
         this.dispatchEvent(event);
     }
 
+    showSuccessToast() {
+        const event = new ShowToastEvent({
+          title: 'Success',
+          message: null,
+          variant: 'success'
+        });
+        this.dispatchEvent(event);
+    }
+
+    showErrorToast() {
+        const event = new ShowToastEvent({
+          title: 'Error',
+          message: null,
+          variant: 'error'
+        });
+        this.dispatchEvent(event);
+    }
 
 }
