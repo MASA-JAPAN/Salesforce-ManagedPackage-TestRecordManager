@@ -26,4 +26,52 @@ global with sharing class API_TestRecordManager {
 
     } 
 
+    global static void createDefinitionsFromSoql(String soqlQuery){
+
+        List<SObject> recordsForDefinition = new List<SObject>();
+
+        try {
+            recordsForDefinition = Database.query(soqlQuery);
+        } catch (Exception e) {
+            throw new API_TestRecordManagerException('Invalid soql: ' + e.getMessage());
+        }
+
+        RecordDefinitionService.ParsedSoql parsedSoql = RecordDefinitionService.parseSOQL(soqlQuery);
+
+        List<RecordDefinitionDto> recordDefinitions = new List<RecordDefinitionDto>();
+
+        for (SObject record : recordsForDefinition) {
+            RecordDefinitionDto recordDefinition = new RecordDefinitionDto();
+            recordDefinition.name = (String)record.get('Name');
+            recordDefinition.obj = parsedSoql.obj;
+            recordDefinition.keyedFieldValues = new List<RecordDefinitionDto.KeyedFieldValue>();
+
+            Integer key = 0;
+            for (String field : parsedSoql.fields) {
+
+                String value = String.valueOf(record.get(field));
+
+                if (value == null) {
+                    continue;
+                }
+
+                RecordDefinitionDto.KeyedFieldValue keyedFieldValue = new RecordDefinitionDto.KeyedFieldValue();
+                keyedFieldValue.key = String.valueOf(key);
+                keyedFieldValue.fieldValue = new RecordDefinitionDto.FieldValue();
+                keyedFieldValue.fieldValue.field = field;
+                keyedFieldValue.fieldValue.value = value;
+                recordDefinition.keyedFieldValues.add(keyedFieldValue);
+                key++;
+            }
+
+            recordDefinitions.add(recordDefinition);
+
+        }
+
+        RecordDefinitionService.createDefinitions(recordDefinitions);
+
+    }
+
+    public class API_TestRecordManagerException extends Exception {}
+
 }

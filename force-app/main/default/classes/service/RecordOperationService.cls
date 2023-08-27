@@ -39,7 +39,11 @@ public with sharing class RecordOperationService {
                     }
                     when 'DATETIME' {
                         Datetime value = Datetime.valueOf(fieldValue.value);
-                        record.put(fieldValue.field.apiName, Datetime.valueOf(value));
+                        record.put(fieldValue.field.apiName, value);
+                    }
+                    when 'DATE' {
+                        Date value = Date.valueOf(fieldValue.value);
+                        record.put(fieldValue.field.apiName, value);
                     }
                     when else {
                         String value = fieldValue.value;
