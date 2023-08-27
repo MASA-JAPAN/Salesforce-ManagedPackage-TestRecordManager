@@ -4,6 +4,10 @@
     <lightning-spinner if:true={isSpinning} class="slds-align_absolute-center" style="position: fixed; margin: -50rem">
     </lightning-spinner>
 
+    <c-toast-component
+        onshowtoast={handleToastEvent}
+    ></c-toast-component>
+
     <div class="slds-modal__header">
         <div class="slds-grid slds-grid_align-center">
             <h1 class="slds-modal__title slds-hyphenate">Test Record Definition</h1>

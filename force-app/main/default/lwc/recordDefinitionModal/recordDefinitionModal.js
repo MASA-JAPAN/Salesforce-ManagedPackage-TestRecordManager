@@ -58,12 +58,12 @@ export default class RecordDefinitionModal extends LightningModal {
         upsertDefinition({ recordDefinitionDtoString })
             .then(() => {
                 this.close();
-                publish('showSuccessToast');
+                this.showToast('Success', 'Definition saved successfully', 'success');
                 publish('refreshdatatable');
             })
             .catch(error => {
                 console.error(error);
-                publish('showErrorToast');
+                this.showToast('Error', error.body.message, 'error');
             })
             .finally(() => {
                 this.closeSpinner();
@@ -81,13 +81,13 @@ export default class RecordDefinitionModal extends LightningModal {
         deleteDefinition({ id: this.id })
             .then(() => {
                 this.close();
-                publish('showSuccessToast');
+                this.showToast('Success', 'Definition deleted successfully', 'success');
                 publish('refreshdatatable');
 
             })
             .catch(error => {
                 console.error(error);
-                publish('showErrorToast');
+                this.showToast('Error', error.body.message, 'error');
             })
             .finally(() => {
                 this.closeSpinner();
@@ -144,6 +144,13 @@ export default class RecordDefinitionModal extends LightningModal {
             }
             return input;
         });
+    }
+
+    showToast(title, message, variant) {
+        // toast-component is substitution for ShowToastEvent.
+        this.template.querySelector('c-toast-component').showToast(
+            title, message, variant
+        );
     }
 
     openSpinner() {
