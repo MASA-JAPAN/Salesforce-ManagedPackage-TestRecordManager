@@ -42,7 +42,7 @@ global with sharing class API_TestRecordManager {
 
         for (SObject record : recordsForDefinition) {
             RecordDefinitionDto recordDefinition = new RecordDefinitionDto();
-            recordDefinition.name = (String)record.get('Name');
+            recordDefinition.name = parsedSoql.obj + '-' + (String)record.get(parsedSoql.fields[0]);
             recordDefinition.obj = parsedSoql.obj;
             recordDefinition.keyedFieldValues = new List<RecordDefinitionDto.KeyedFieldValue>();
 

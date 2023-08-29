@@ -9,9 +9,11 @@ public with sharing class RecordOperationService {
 
         List<sObject> recordsToCreate = new List<sObject>();
 
+        Map<String,Schema.SObjectType> fieldToSobjectTypeMap = Schema.getGlobalDescribe();
+
         for (Object configToInsertDtoString : configToInsertDtoStrings) {
             ConfigToInsertDto configToInsert = (ConfigToInsertDto) JSON.deserialize(String.valueOf(configToInsertDtoString), ConfigToInsertDto.class);
-            Schema.SObjectType objectType = Schema.getGlobalDescribe().get(configToInsert.obj);
+            Schema.SObjectType objectType = fieldToSobjectTypeMap.get(configToInsert.obj);
 
             sObject record = objectType.newSObject();
             for (ConfigToInsertDto.FieldValue fieldValue : configToInsert.fieldValues) {
@@ -26,16 +28,20 @@ public with sharing class RecordOperationService {
                         record.put(fieldValue.field.apiName, value);
                     }
                     when 'INTEGER' {
-                        String value = fieldValue.value;
-                        record.put(fieldValue.field.apiName, Integer.valueOf(value));
+                        Integer value = Integer.valueOf(fieldValue.value);
+                        record.put(fieldValue.field.apiName, value);
                     }
                     when 'DOUBLE' {
-                        String value = fieldValue.value;
-                        record.put(fieldValue.field.apiName, Double.valueOf(value));
+                        Double value = Double.valueOf(fieldValue.value);
+                        record.put(fieldValue.field.apiName, value);
                     }
                     when 'DECIMAL' {
-                        String value = fieldValue.value;
-                        record.put(fieldValue.field.apiName, Decimal.valueOf(value));
+                        Decimal value = Decimal.valueOf(fieldValue.value);
+                        record.put(fieldValue.field.apiName, value);
+                    }
+                    when 'CURRENCY' {
+                        Decimal value = Decimal.valueOf(fieldValue.value);
+                        record.put(fieldValue.field.apiName, value);
                     }
                     when 'DATETIME' {
                         Datetime value = Datetime.valueOf(fieldValue.value);
