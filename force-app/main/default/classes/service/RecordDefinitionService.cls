@@ -16,7 +16,6 @@ public with sharing class RecordDefinitionService {
 
         recordDefinition.Name = recordDefinitionDto.name;
         recordDefinition.Object__c = recordDefinitionDto.obj;
-        recordDefinition.FieldValuesToEdit__c = JSON.serialize(recordDefinitionDto.keyedFieldValues);
         recordDefinition.ConfigToInsert__c = JSON.serialize(configToInsert);
 
         upsert recordDefinition;
@@ -37,7 +36,6 @@ public with sharing class RecordDefinitionService {
             RecordDefinition__c recordDefinition = new RecordDefinition__c();
             recordDefinition.Name = recordDefinitionDto.name;
             recordDefinition.Object__c = recordDefinitionDto.obj;
-            recordDefinition.FieldValuesToEdit__c = JSON.serialize(recordDefinitionDto.keyedFieldValues);
             recordDefinition.ConfigToInsert__c = JSON.serialize(configToInsert);
             recordDefinitions.add(recordDefinition);
         }
@@ -51,7 +49,7 @@ public with sharing class RecordDefinitionService {
 
     @AuraEnabled
     public static List<RecordDefinition__c> getAllRecordDefinitions() {
-        return [SELECT Id, Name, Object__c, CreatedDate, FieldValuesToEdit__c, ConfigToInsert__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
+        return [SELECT Id, Name, Object__c, CreatedDate, ConfigToInsert__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
     }
 
     @AuraEnabled
@@ -61,7 +59,7 @@ public with sharing class RecordDefinitionService {
             return getAllRecordDefinitions();
         } else {
             String searchInputForPartialMatch = '%' + searchInput + '%'; 
-            return [SELECT Id, Name, Object__c, CreatedDate, FieldValuesToEdit__c, ConfigToInsert__c, LastModifiedDate FROM RecordDefinition__c WHERE Name LIKE :searchInputForPartialMatch ORDER BY LastModifiedDate DESC];            
+            return [SELECT Id, Name, Object__c, CreatedDate, ConfigToInsert__c, LastModifiedDate FROM RecordDefinition__c WHERE Name LIKE :searchInputForPartialMatch ORDER BY LastModifiedDate DESC];            
         }
 
     }
@@ -86,17 +84,17 @@ public with sharing class RecordDefinitionService {
 
         Map<String, Schema.SObjectField> fieldMap = sobjectType.getDescribe().fields.getMap();
 
-        for (RecordDefinitionDto.KeyedFieldValue keyedFieldValue : recordDefinition.keyedFieldValues) {
-            if (fieldMap.containsKey(keyedFieldValue.fieldValue.field)) {
-                ConfigToInsertDto.FieldValue fieldValue = new ConfigToInsertDto.FieldValue();
+        for (RecordDefinitionDto.FieldValue fieldValue : recordDefinition.fieldValues) {
+            if (fieldMap.containsKey(fieldValue.field)) {
+                ConfigToInsertDto.FieldValue fieldValueOfConfigToInsertDto = new ConfigToInsertDto.FieldValue();
                 ConfigToInsertDto.Field field = new ConfigToInsertDto.Field();
-                field.apiName = keyedFieldValue.fieldValue.field;
-                field.dataType = fieldMap.get(keyedFieldValue.fieldValue.field).getDescribe().getType().name();
-                fieldValue.field = field;
-                fieldValue.value = keyedFieldValue.fieldValue.value;
-                configToInsert.fieldValues.add(fieldValue);
+                field.apiName = fieldValue.field;
+                field.dataType = fieldMap.get(fieldValue.field).getDescribe().getType().name();
+                fieldValueOfConfigToInsertDto.field = field;
+                fieldValueOfConfigToInsertDto.value = fieldValue.value;
+                configToInsert.fieldValues.add(fieldValueOfConfigToInsertDto);
             } else {
-                throw new RecordDefinitionServiceException(keyedFieldValue.fieldValue.field + ' does not exist');
+                throw new RecordDefinitionServiceException(fieldValue.field + ' does not exist');
             }
         }
 
