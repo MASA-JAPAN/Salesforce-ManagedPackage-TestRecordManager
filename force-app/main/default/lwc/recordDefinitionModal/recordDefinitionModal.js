@@ -27,16 +27,21 @@ export default class RecordDefinitionModal extends LightningModal {
             this.id = this.content.Id;
             this.definitionName = this.content.Name;
             this.objectName = this.content.MJ_TRM__Object__c;
-            this.inputList = JSON.parse(this.content.MJ_TRM__FieldValuesToEdit__c);
 
-            let largestKey = 0;
-            this.inputList.forEach(input => {
-                if (input.key > largestKey) {
-                    largestKey = input.key;
-                }
-            });
+            const configToInsert = JSON.parse(this.content.MJ_TRM__ConfigToInsert__c);
 
-            this.nextKey = largestKey + 1;
+            configToInsert.fieldValues.forEach(fieldValue =>{
+                this.inputList = [...this.inputList, 
+                    { 
+                        key: this.nextKey, 
+                        fieldValue: {
+                            field: fieldValue.field.apiName,
+                            value: fieldValue.value
+                        }
+                    }
+                ];
+                this.nextKey++;
+            })
 
         } catch (error) {
             console.log(error);
@@ -45,11 +50,18 @@ export default class RecordDefinitionModal extends LightningModal {
     }
 
     handleSave() {
+
+        let fieldValues = [];
+
+        this.inputList.forEach(input => {
+            fieldValues.push(input.fieldValue);
+        });
+
         const recordDefinitionDto = {
             id: this.id,
             name: this.definitionName,
             obj: this.objectName,
-            keyedFieldValues: this.inputList
+            fieldValues: fieldValues
         };
 
         const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);

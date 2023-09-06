@@ -192,9 +192,47 @@ private class RecordOperationServiceTest {
 
     }
 
+    @isTest
+    static void testCreateRecords_CurrencyField_catchError() {
+        // Test data setup
+        ConfigToInsertDto configToInsertDto = new ConfigToInsertDto();
+        configToInsertDto.obj = 'Account';
+        configToInsertDto.fieldValues = new List<ConfigToInsertDto.FieldValue>();
+
+        ConfigToInsertDto.FieldValue stringFieldValue = new ConfigToInsertDto.FieldValue();
+        stringFieldValue.field = new ConfigToInsertDto.Field();
+        stringFieldValue.field.apiName = 'Name';
+        stringFieldValue.field.dataType = 'STRING';
+        stringFieldValue.value = 'Test-Company-{0}';
+
+        configToInsertDto.fieldValues.add(stringFieldValue);
+
+        ConfigToInsertDto.FieldValue currencyFieldValue = new ConfigToInsertDto.FieldValue();
+        currencyFieldValue.field = new ConfigToInsertDto.Field();
+        currencyFieldValue.field.apiName = 'Currency__c';
+        currencyFieldValue.field.dataType = 'CURRENCY';
+        currencyFieldValue.value = '1';
+
+        configToInsertDto.fieldValues.add(currencyFieldValue);
+
+        String configToInsertDtoString = JSON.serialize(configToInsertDto);
+
+        // Test method execution
+        Test.startTest();
+        try {
+            RecordOperationService.createRecords(new List<Object>{configToInsertDtoString});
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+            System.debug(e.getLineNumber());
+            return;
+        }
+        Test.stopTest();
+
+    }
+
 
     @isTest
-    static void testCreateRecords_DateTtimeField_catchError() {
+    static void testCreateRecords_DateTimeField_catchError() {
         // Test data setup
         ConfigToInsertDto configToInsertDto = new ConfigToInsertDto();
         configToInsertDto.obj = 'Account';
@@ -215,6 +253,46 @@ private class RecordOperationServiceTest {
         datetimeFieldValue.value = '2000-12-12 00:00:00';
 
         configToInsertDto.fieldValues.add(datetimeFieldValue);
+
+
+        String configToInsertDtoString = JSON.serialize(configToInsertDto);
+
+        // Test method execution
+        Test.startTest();
+        try {
+            RecordOperationService.createRecords(new List<Object>{configToInsertDtoString});
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+            System.debug(e.getLineNumber());
+            return;
+        }
+        Test.stopTest();
+
+    }
+
+    
+    @isTest
+    static void testCreateRecords_DateField_catchError() {
+        // Test data setup
+        ConfigToInsertDto configToInsertDto = new ConfigToInsertDto();
+        configToInsertDto.obj = 'Account';
+        configToInsertDto.fieldValues = new List<ConfigToInsertDto.FieldValue>();
+
+        ConfigToInsertDto.FieldValue stringFieldValue = new ConfigToInsertDto.FieldValue();
+        stringFieldValue.field = new ConfigToInsertDto.Field();
+        stringFieldValue.field.apiName = 'Name';
+        stringFieldValue.field.dataType = 'STRING';
+        stringFieldValue.value = 'Test-Company-{0}';
+
+        configToInsertDto.fieldValues.add(stringFieldValue);
+
+        ConfigToInsertDto.FieldValue dateFieldValue = new ConfigToInsertDto.FieldValue();
+        dateFieldValue.field = new ConfigToInsertDto.Field();
+        dateFieldValue.field.apiName = 'Date__c';
+        dateFieldValue.field.dataType = 'DATE';
+        dateFieldValue.value = '2000-12-12 00:00:00';
+
+        configToInsertDto.fieldValues.add(dateFieldValue);
 
 
         String configToInsertDtoString = JSON.serialize(configToInsertDto);
