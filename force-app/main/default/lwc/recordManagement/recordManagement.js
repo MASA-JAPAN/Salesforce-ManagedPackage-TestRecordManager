@@ -50,19 +50,21 @@ export default class RecordManagement extends LightningElement {
 
     connectedCallback() {
 
+        this.openSpinner();
+
         getAllRecordDefinitions()
             .then(result => {
                 this.recordDefinitions = result;
-
             })
             .catch(error => {
                 console.error(error);
                 this.showToast('Error', error.body.message, 'error');
+            })
+            .finally(() => {
+                this.closeSpinner();
             });
 
         subscribe('refreshdatatable', this.handleRefreshDatatable.bind(this));
-        subscribe('showSuccessToast', this.showSuccessToast.bind(this));
-        subscribe('showErrorToast', this.showErrorToast.bind(this));
     }
 
     handleClickNewDefinition() {
@@ -179,24 +181,6 @@ export default class RecordManagement extends LightningElement {
           title: title,
           message: message,
           variant: variant
-        });
-        this.dispatchEvent(event);
-    }
-
-    showSuccessToast() {
-        const event = new ShowToastEvent({
-          title: 'Success',
-          message: null,
-          variant: 'success'
-        });
-        this.dispatchEvent(event);
-    }
-
-    showErrorToast() {
-        const event = new ShowToastEvent({
-          title: 'Error',
-          message: null,
-          variant: 'error'
         });
         this.dispatchEvent(event);
     }
