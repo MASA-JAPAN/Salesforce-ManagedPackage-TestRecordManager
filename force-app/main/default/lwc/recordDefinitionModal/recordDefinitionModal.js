@@ -81,6 +81,38 @@ export default class RecordDefinitionModal extends LightningModal {
                 this.closeSpinner();
             });
     }
+
+    handleSaveAsNew() {
+
+        let fieldValues = [];
+
+        this.inputList.forEach(input => {
+            fieldValues.push(input.fieldValue);
+        });
+
+        const recordDefinitionDto = {
+            name: this.definitionName,
+            obj: this.objectName,
+            fieldValues: fieldValues
+        };
+
+        const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
+        this.openSpinner();
+
+        upsertDefinition({ recordDefinitionDtoString })
+            .then(() => {
+                this.close();
+                this.showToast('Success', 'Definition saved successfully', 'success');
+                publish('refreshdatatable');
+            })
+            .catch(error => {
+                console.error(error);
+                this.showToast('Error', error.body.message, 'error');
+            })
+            .finally(() => {
+                this.closeSpinner();
+            });
+    }
     
     handleCancel() {
         this.close();
