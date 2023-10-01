@@ -1,5 +1,7 @@
 import { api, track } from 'lwc';
 import LightningModal from 'lightning/modal';
+import insertTagsIfUnexisting from '@salesforce/apex/RecordDefinitionService.insertTagsIfUnexisting';
+import deleteTagsIfUnused from '@salesforce/apex/RecordDefinitionService.deleteTagsIfUnused';
 import upsertDefinition from '@salesforce/apex/RecordDefinitionService.upsertDefinition';
 import deleteDefinition from '@salesforce/apex/RecordDefinitionService.deleteDefinition';
 // import { ShowToastEvent } from 'lightning/platformShowToastEvent'; // It is not possible to use ShowToastEvent from LightningModal because there is a bug in LWC.
@@ -11,6 +13,8 @@ export default class RecordDefinitionModal extends LightningModal {
 
     @track id = "";
     @track definitionName = "";
+    @track initialTagsInput = "";
+    @track tagsInput = "";
     @track objectName = "";
     @track inputList = [];
     nextKey = 0;
@@ -26,6 +30,8 @@ export default class RecordDefinitionModal extends LightningModal {
 
             this.id = this.content.Id;
             this.definitionName = this.content.Name;
+            this.initialTagsInput = this.content.MJ_TRM__Tag__c;
+            this.tagsInput = this.content.MJ_TRM__Tag__c;
             this.objectName = this.content.MJ_TRM__Object__c;
 
             const configToInsert = JSON.parse(this.content.MJ_TRM__ConfigToInsert__c);
@@ -49,7 +55,16 @@ export default class RecordDefinitionModal extends LightningModal {
 
     }
 
-    handleSave() {
+    async handleSave() {
+
+        const initialInputTags = this.initialTagsInput?.split(';');
+        const inputTags = this.tagsInput?.split(';');
+
+        const addedTags = inputTags?.filter(inputTag => !initialInputTags?.includes(inputTag));
+        const removedTags = initialInputTags?.filter(initialInputTag => !inputTags?.includes(initialInputTag));
+        
+        await insertTagsIfUnexisting({tags: addedTags});
+        await deleteTagsIfUnused({tags: removedTags});
 
         let fieldValues = [];
 
@@ -60,6 +75,7 @@ export default class RecordDefinitionModal extends LightningModal {
         const recordDefinitionDto = {
             id: this.id,
             name: this.definitionName,
+            tag: this.tagsInput,
             obj: this.objectName,
             fieldValues: fieldValues
         };
@@ -158,6 +174,14 @@ export default class RecordDefinitionModal extends LightningModal {
     handleDefinitionNameInputChange(event) {
         const inputValue = event.target.value;
         this.definitionName = inputValue;
+    }
+
+    handleTagInputChange(event) {
+        const inputValue = event.target.value;
+        this.tagsInput = inputValue;
+
+        console.log(this.tagsInput);
+
     }
 
     handleObjectNameInputChange(event) {

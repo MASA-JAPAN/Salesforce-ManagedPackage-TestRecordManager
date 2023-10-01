@@ -1,6 +1,7 @@
 public with sharing class RecordDefinitionDto {
     public Id id;
     public String name;
+    public String tag;
     public String obj;
     public List<FieldValue> fieldValues;
 

@@ -15,6 +15,7 @@
     </div>
     <lightning-modal-body>
         <lightning-input type="text" label="Definition Name" id="definitionNameInput" value={definitionName} onchange={handleDefinitionNameInputChange}></lightning-input>
+        <lightning-input type="text" label="Tag (Separate by semicolon like tag1;tag2;)" id="tagsInput" value={tagsInput} onchange={handleTagInputChange}></lightning-input>
         <lightning-input type="text" label="Object" id="ObjectNameInput" value={objectName} onchange={handleObjectNameInputChange}></lightning-input>
         <template for:each={inputList} for:item="input" for:index="index">
             <div key={input.key} class="slds-m-bottom_small">

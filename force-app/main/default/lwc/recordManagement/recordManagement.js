@@ -1,6 +1,7 @@
 import { LightningElement, track } from "lwc";
 import RecordDefinitionModal from 'c/recordDefinitionModal';
 import getAllRecordDefinitions from '@salesforce/apex/RecordDefinitionService.getAllRecordDefinitions';
+import getAllTags from '@salesforce/apex/RecordDefinitionService.getAllTags';
 import searchRecordDefinitions from '@salesforce/apex/RecordDefinitionService.searchRecordDefinitions';
 import createRecords from '@salesforce/apex/RecordOperationService.createRecords';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -9,6 +10,10 @@ import { subscribe, unsubscribe, publish } from 'c/pubsub';
 export default class RecordManagement extends LightningElement {
 
     @track isSpinning = false;
+
+    @track allTags = [];
+    @track selectedTags = [];
+
     @track searchInput = "";
 
     @track recordDefinitions;
@@ -51,6 +56,17 @@ export default class RecordManagement extends LightningElement {
     connectedCallback() {
 
         this.openSpinner();
+
+        getAllTags()
+            .then(result => {
+                this.allTags = result;
+
+                console.log(JSON.stringify(this.allTags));
+            })
+            .catch(error => {
+                console.error(error);
+                this.showToast('Error', error.body.message, 'error');
+            });
 
         getAllRecordDefinitions()
             .then(result => {
@@ -128,6 +144,18 @@ export default class RecordManagement extends LightningElement {
 
         this.openSpinner();
 
+        getAllTags()
+            .then(result => {
+                this.allTags = result;
+
+                console.log(JSON.stringify(this.allTags));
+            })
+            .catch(error => {
+                console.error(error);
+                this.showToast('Error', error.body.message, 'error');
+            });
+
+
         searchRecordDefinitions({searchInput: this.searchInput})
             .then(result => {
                 this.recordDefinitions = result;
@@ -183,6 +211,19 @@ export default class RecordManagement extends LightningElement {
           variant: variant
         });
         this.dispatchEvent(event);
+    }
+
+    handleChangeTag(e){
+
+        if (e.target.checked) {
+            this.selectedTags.push(e.target.label);
+        } else {
+            const index = this.selectedTags.indexOf(e.target.label);
+            if (index !== -1) {
+                this.selectedTags.splice(index, 1);
+            }
+        }
+
     }
 
 }

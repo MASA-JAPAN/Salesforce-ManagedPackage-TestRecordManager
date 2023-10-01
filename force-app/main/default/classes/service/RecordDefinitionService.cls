@@ -15,6 +15,7 @@ public with sharing class RecordDefinitionService {
         }
 
         recordDefinition.Name = recordDefinitionDto.name;
+        recordDefinition.Tag__c = recordDefinitionDto.tag;
         recordDefinition.Object__c = recordDefinitionDto.obj;
         recordDefinition.ConfigToInsert__c = JSON.serialize(configToInsert);
 
@@ -46,10 +47,67 @@ public with sharing class RecordDefinitionService {
 
     }
 
+    @AuraEnabled
+    public static void insertTagsIfUnexisting(List<String> tags){
+        
+        List<Tag__c> existingTagObjs = [SELECT Id, Name FROM Tag__c WHERE Name = :tags];
+        Set<String> existingTags = new Set<String>();
+
+        for (Tag__c tagObj : existingTagObjs) {
+            existingTags.add(tagObj.Name);
+        }
+
+        List<Tag__c> tagsToInsert = new List<Tag__c>();
+        for (String tag : tags) {
+
+            if (!existingTags.contains(tag)) {
+                Tag__c tagObj = new Tag__c();
+                tagObj.Name = tag;
+                tagsToInsert.add(tagObj);
+            }
+
+        }
+
+        System.debug(tagsToInsert);
+
+        insert tagsToInsert;
+
+    }
+
+    @AuraEnabled
+    public static void deleteTagsIfUnused(List<String> tags){
+
+        List<String> unusedTags = new List<String>();
+
+        List<RecordDefinition__c> definitions = [SELECT Id, Tag__c FROM RecordDefinition__c WHERE Tag__c = :tags];
+        Map<String, RecordDefinition__c> tagToDefinitionMap = new Map<String, RecordDefinition__c>();
+        for (RecordDefinition__c definition : definitions) {
+            tagToDefinitionMap.put(definition.Tag__c, definition);
+        }
+
+        for (String tag : tags) {
+            if (tagToDefinitionMap.get(tag) == null) {
+                unusedTags.add(tag);
+            }
+        }
+
+        List<Tag__c> tagsToDelete = [SELECT Id FROM Tag__c WHERE Name = :unusedTags];
+
+        System.debug(tagsToDelete);
+
+        delete tagsToDelete;
+
+    }
+
 
     @AuraEnabled
     public static List<RecordDefinition__c> getAllRecordDefinitions() {
-        return [SELECT Id, Name, Object__c, CreatedDate, ConfigToInsert__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
+        return [SELECT Id, Name, Tag__c, Object__c, CreatedDate, ConfigToInsert__c, LastModifiedDate FROM RecordDefinition__c ORDER BY LastModifiedDate DESC];
+    }
+
+    @AuraEnabled
+    public static List<Tag__c> getAllTags() {
+        return [SELECT Id, Name FROM Tag__c ORDER BY Name ASC];
     }
 
     @AuraEnabled

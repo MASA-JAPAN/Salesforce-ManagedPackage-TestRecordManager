@@ -26,6 +26,22 @@
                 </div>
             </div>
 
+            <div class="slds-page-header__col-actions slds-size_1-of-3">
+
+                <lightning-layout multiple-rows>
+
+                    <template if:true={allTags}>
+                        <template for:each={allTags} for:item="tag">
+                            <lightning-layout-item key = {tag.Name} class="slds-m-right_x-small">
+                                <lightning-input class="slds-p-left-medium" type="checkbox" data-id="checkbox" label={tag.Name} key = {tag.Name} onchange={handleChangeTag}>{tag.Name}</lightning-input>
+                            </lightning-layout-item>
+                        </template>
+                    </template>
+
+                </lightning-layout>
+
+            </div>
+
             <div class="slds-page-header__col-actions">
                 <div class="slds-page-header__controls">
                     <lightning-icon class="slds-align_absolute-center slds-m-right_xx-small" icon-name="utility:search" alternative-text="search" title="search" size="small"></lightning-icon>
