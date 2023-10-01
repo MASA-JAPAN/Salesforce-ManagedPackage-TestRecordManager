@@ -57,7 +57,9 @@
             <div>
                 <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-horizontal_x-small"></lightning-button>
                 <lightning-button label="Save As New" onclick={handleSaveAsNew} variant="brand" class="slds-m-horizontal_x-small"></lightning-button>
-                <lightning-button label="Save" onclick={handleSave} variant="brand" class="slds-m-horizontal_x-small"></lightning-button>
+                <template if:true={isUpdate}>
+                    <lightning-button label="Save" onclick={handleSave} variant="brand" class="slds-m-horizontal_x-small"></lightning-button>
+                </template>
             </div>
         </div>
     </lightning-modal-footer>
