@@ -11,7 +11,7 @@
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <label>TRM</label>
     <navType>Standard</navType>
-    <tabs>Definition</tabs>
+    <tabs>RecordDefinition</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>TRM_UtilityBar</utilityBar>
 </CustomApplication>

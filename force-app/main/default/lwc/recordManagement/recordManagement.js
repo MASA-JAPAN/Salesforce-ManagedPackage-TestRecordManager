@@ -71,7 +71,8 @@ export default class RecordManagement extends LightningElement {
         RecordDefinitionModal.open({
             size: 'medium',
             content: null,
-            label: 'Record Definition'
+            label: 'Record Definition',
+            type: 'NEW'
         });
     }
 
@@ -115,7 +116,8 @@ export default class RecordManagement extends LightningElement {
                 RecordDefinitionModal.open({
                     size: 'medium',
                     content: row,
-                    label: 'Record Definition'
+                    label: 'Record Definition',
+                    type: 'UPDATE'
                 });
 
                 break;

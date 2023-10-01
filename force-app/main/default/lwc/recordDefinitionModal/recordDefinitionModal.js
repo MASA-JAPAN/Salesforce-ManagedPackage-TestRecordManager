@@ -13,9 +13,11 @@ export default class RecordDefinitionModal extends LightningModal {
     @track definitionName = "";
     @track objectName = "";
     @track inputList = [];
+    @track isUpdate = false;
     nextKey = 0;
 
     @api content;
+    @api type;
 
     connectedCallback() {
 
@@ -27,6 +29,10 @@ export default class RecordDefinitionModal extends LightningModal {
             this.id = this.content.Id;
             this.definitionName = this.content.Name;
             this.objectName = this.content.MJ_TRM__Object__c;
+
+            if (this.type == 'UPDATE') {
+                this.isUpdate = true;
+            }
 
             const configToInsert = JSON.parse(this.content.MJ_TRM__ConfigToInsert__c);
 
@@ -59,6 +65,38 @@ export default class RecordDefinitionModal extends LightningModal {
 
         const recordDefinitionDto = {
             id: this.id,
+            name: this.definitionName,
+            obj: this.objectName,
+            fieldValues: fieldValues
+        };
+
+        const recordDefinitionDtoString = JSON.stringify(recordDefinitionDto);
+        this.openSpinner();
+
+        upsertDefinition({ recordDefinitionDtoString })
+            .then(() => {
+                this.close();
+                this.showToast('Success', 'Definition saved successfully', 'success');
+                publish('refreshdatatable');
+            })
+            .catch(error => {
+                console.error(error);
+                this.showToast('Error', error.body.message, 'error');
+            })
+            .finally(() => {
+                this.closeSpinner();
+            });
+    }
+
+    handleSaveAsNew() {
+
+        let fieldValues = [];
+
+        this.inputList.forEach(input => {
+            fieldValues.push(input.fieldValue);
+        });
+
+        const recordDefinitionDto = {
             name: this.definitionName,
             obj: this.objectName,
             fieldValues: fieldValues
